@@ -15,7 +15,7 @@
               <i :class="`${index} fa fa-star`"></i>
             </li>
           </ul>
-          <p class="moves">Moves: {{numMoves}}</p>
+          <p class="moves">Score: {{playerScore}}</p>
         </div>
       </section>
 
@@ -63,7 +63,7 @@ export default {
       "stars",
       "cardsFlipped",
       "numCardsFlipped",
-      "numMoves",
+      "playerScore",
       "cardsMatched",
       "types"
     ]),
@@ -81,7 +81,7 @@ export default {
       "clear_CardsFlipped",
       "update_CardsFlipped",
       "update_NumCardsFlipped",
-      "update_NumMoves",
+      "update_playerScore",
       "clear_CardsMatched",
       "update_CardsMatched",
       "update_GameAnnounce"
@@ -118,22 +118,11 @@ export default {
 
     flipCard(card) {
       this.update_GameAnnounce({ message: "" });
-      if (card.flipped) {
+      while (card.flipped) {
         this.update_GameAnnounce({
           message: "Card already flipped."
         });
         return;
-      } else {
-        this.update_NumMoves({ moves: this.numMoves + 1 });
-        if (this.numMoves < 30) {
-          this.update_Stars({ num: 3 });
-        } else if (this.numMoves < 40) {
-          this.update_Stars({ num: 2 });
-        } else if (this.numMoves < 50) {
-          this.update_Stars({ num: 1 });
-        } else if (this.numMoves > 50) {
-          this.update_Stars({ num: 0 });
-        }
       }
       // only allow flips if there are < or = 2 flipped cards
       if (this.numCardsFlipped < 2) {
@@ -150,6 +139,7 @@ export default {
           this.numCardsFlipped === 2 &&
           this.cardsFlipped[0].name == this.cardsFlipped[1].name
         ) {
+          this.update_playerScore({ moves: this.playerScore + 10 });
           let matchesRemaining =
             this.deck.cards.length / 2 - this.cardsMatched.length - 1;
           for (let i = 0; i < this.deck.cards.length; i++) {
@@ -180,6 +170,7 @@ export default {
           this.numCardsFlipped === 2 &&
           this.cardsFlipped[0].name !== this.cardsFlipped[1].name
         ) {
+          this.update_playerScore({ moves: this.playerScore - 1 });
           // Wait before closing mismatched card
           this.update_GameAnnounce({
             message: card.name + " flipped. No match."

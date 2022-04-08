@@ -8,10 +8,9 @@ export default new Vuex.Store({
     routeAnnouncement: '',
     gameAnnounce: '',
     win: false,
-    stars: 3,
     cardsFlipped: [],
     numCardsFlipped: 0,
-    numMoves: 0,
+    playerScore: 100,
     cardsMatched: [],
     types: [
       "car",
@@ -26,7 +25,7 @@ export default new Vuex.Store({
   },
   getters: {
     gameUpdate: (state) => {
-      let update = 'You have ' + state.numMoves + ' total moves with ' + state.stars + ' stars left.'
+      let update = 'You have ' + state.playerScore + ' total moves with ' + state.stars + ' stars left.'
       return update
     },
     deck: (state) => {
@@ -86,8 +85,8 @@ export default new Vuex.Store({
     UPDATE_NUMCARDSFLIPPED(state, payload) {
       state.numCardsFlipped = payload;
     },
-    UPDATE_NUMMOVES(state, payload) {
-      state.numMoves = payload
+    UPDATE_playerScore(state, payload) {
+      state.playerScore = payload
     },
     CLEAR_CARDSMATCHED(state, payload) {
       state.cardsMatched = payload;
@@ -106,7 +105,7 @@ export default new Vuex.Store({
         await dispatch('update_Stars', ({ num: 3 }))
         await dispatch('clear_CardsFlipped', ({ cards: [] }))
         await dispatch('update_NumCardsFlipped', ({ num: 0 }))
-        await dispatch('update_NumMoves', ({ moves: 0 }))
+        await dispatch('update_playerScore', ({ moves: 0 }))
         await dispatch('clear_CardsMatched', ({ cards: [] }))
         await dispatch('update_GameAnnounce', ({ message: "" }))
       } catch (error) {
@@ -131,8 +130,8 @@ export default new Vuex.Store({
     update_NumCardsFlipped({ commit }, { num }) {
       commit('UPDATE_NUMCARDSFLIPPED', num)
     },
-    update_NumMoves({ commit }, { moves }) {
-      commit('UPDATE_NUMMOVES', moves)
+    update_playerScore({ commit }, { moves }) {
+      commit('UPDATE_playerScore', moves)
     },
     clear_CardsMatched({ commit }, { cards }) {
       commit('CLEAR_CARDSMATCHED', cards)
