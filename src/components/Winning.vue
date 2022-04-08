@@ -3,7 +3,7 @@
     <div>
       <h2 id="congratulations" aria-labelledby="congratulations winningMsg" v-focus tabindex="-1">Congratulations</h2>
       <p id="winningMsg">You won!</p>
-      <button class="buttonGray" @click="newGame()">Play again</button>
+      <button class="reset-button" @click="newGame()">Play again</button>
     </div>
   </div>
 </template>

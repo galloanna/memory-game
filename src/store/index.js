@@ -13,14 +13,14 @@ export default new Vuex.Store({
     playerScore: 100,
     cardsMatched: [],
     types: [
-      "car",
-      "bug",
-      "paw",
-      "bomb",
-      "gamepad",
-      "diamond",
-      "heart",
-      "bell"
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8"
     ]
   },
   getters: {
@@ -35,14 +35,14 @@ export default new Vuex.Store({
       for (let index = 0; index < state.types.length; index++) {
         deck.cards.push({
           name: state.types[index],
-          icon: "fa fa-" + state.types[index],
+          value: state.types[index],
           flipped: false,
           match: false,
           close: false
         });
         deck.cards.push({
           name: state.types[index],
-          icon: "fa fa-" + state.types[index],
+          value: state.types[index],
           flipped: false,
           match: false,
           close: false
