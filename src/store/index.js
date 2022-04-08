@@ -5,7 +5,6 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    routeAnnouncement: '',
     gameAnnounce: '',
     win: false,
     cardsFlipped: [],
@@ -58,9 +57,6 @@ export default new Vuex.Store({
     UPDATE_ANNOUNCE(state, payload) {
       state.announce = payload
     },
-    UPDATE_ROUTE_ANNOUNCEMENT(state, payload) {
-      state.routeAnnouncement = payload
-    },
     UPDATE_WIN(state, payload) {
       state.win = payload
     },
@@ -98,9 +94,6 @@ export default new Vuex.Store({
       } catch (error) {
         commit('ERROR', error)
       }
-    },
-    update_routeAnnouncement({ commit }, { message }) {
-      commit('UPDATE_ROUTE_ANNOUNCEMENT', message)
     },
     update_Win({ commit }, { win }) {
       commit('UPDATE_WIN', win)

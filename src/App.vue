@@ -3,44 +3,18 @@
     <header>
       <h1 class="title sr-only">Matching Game</h1>
     </header>
-    <p role="status">{{ routeAnnouncement }}</p>
     <router-view />
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
-
 export default {
   name: "app",
-  computed: {
-    ...mapState(["routeAnnouncement"]),
-  },
   watch: {
     $route: function () {
       this.$refs["skipLink"].focus();
 
       this.announceRoute({ message: this.$route.name + " page loaded" });
-
-      this.$nextTick(function () {
-        let navLinks = this.$refs.nav;
-
-        navLinks.querySelectorAll("[aria-current]").forEach((current) => {
-          current.removeAttribute("aria-current");
-        });
-
-        navLinks
-          .querySelectorAll(".router-link-exact-active")
-          .forEach((current) => {
-            current.setAttribute("aria-current", "page");
-          });
-      });
-    },
-  },
-  methods: {
-    ...mapActions(["update_routeAnnouncement"]),
-    announceRoute(message) {
-      this.update_routeAnnouncement(message);
     },
   },
 };
