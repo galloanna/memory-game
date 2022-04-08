@@ -25,7 +25,7 @@ export default new Vuex.Store({
   },
   getters: {
     gameUpdate: (state) => {
-      let update = 'You have ' + state.playerScore + ' total moves with ' + state.stars + ' stars left.'
+      let update = 'You have ' + state.playerScore + ' points.'
       return update
     },
     deck: (state) => {
@@ -52,10 +52,8 @@ export default new Vuex.Store({
     },
     winningMessage: (state) => {
       let msg;
-      if (state.stars != 1) {
-        msg = `You won the game with ${state.stars} stars left!`;
-      } else {
-        msg = `You won the game with ${state.stars} star left!`;
+      while (state.playerScore > 0) {
+        msg = `You won the game!`;
       }
       return msg;
     }
@@ -72,9 +70,6 @@ export default new Vuex.Store({
     },
     UPDATE_WIN(state, payload) {
       state.win = payload
-    },
-    UPDATE_STARS(state, payload) {
-      state.stars = payload
     },
     CLEAR_CARDSFLIPPED(state, payload) {
       state.cardsFlipped = payload;
@@ -102,7 +97,6 @@ export default new Vuex.Store({
     async clearGame({ commit, dispatch }) {
       try {
         await dispatch('update_Win', ({ win: false }))
-        await dispatch('update_Stars', ({ num: 3 }))
         await dispatch('clear_CardsFlipped', ({ cards: [] }))
         await dispatch('update_NumCardsFlipped', ({ num: 0 }))
         await dispatch('update_playerScore', ({ moves: 0 }))
@@ -117,9 +111,6 @@ export default new Vuex.Store({
     },
     update_Win({ commit }, { win }) {
       commit('UPDATE_WIN', win)
-    },
-    update_Stars({ commit }, { num }) {
-      commit('UPDATE_STARS', num);
     },
     clear_CardsFlipped({ commit }, { cards }) {
       commit('CLEAR_CARDSFLIPPED', cards)

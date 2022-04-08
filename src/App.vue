@@ -11,7 +11,6 @@
     <p role="status">{{routeAnnouncement}}</p>
     <div id="nav" ref="nav">
       <router-link to="/" aria-current="page" :active-class="$route.path=='/' ? 'router-link-active' : ''">Home</router-link> |
-      <router-link to="/Instructions">Instructions</router-link>
     </div>
     <router-view />
   </div>

@@ -10,11 +10,6 @@
           <span class="reset">Reset</span>
         </button>
         <div>
-          <ul class="stars" :aria-label="stars + ' stars left'">
-            <li v-for="(star, index) in stars" :key="index" class="star">
-              <i :class="`${index} fa fa-star`"></i>
-            </li>
-          </ul>
           <p class="moves">Score: {{playerScore}}</p>
         </div>
       </section>
@@ -60,7 +55,6 @@ export default {
     ...mapState([
       "gameAnnounce",
       "win",
-      "stars",
       "cardsFlipped",
       "numCardsFlipped",
       "playerScore",
@@ -77,7 +71,6 @@ export default {
       "clearGame",
       "updateDeck",
       "update_Win",
-      "update_Stars",
       "clear_CardsFlipped",
       "update_CardsFlipped",
       "update_NumCardsFlipped",
@@ -282,19 +275,7 @@ export default {
 }
 
 // Game Controller
-.gameController .stars {
-  padding: 0px;
-  display: inline-block;
-  margin: 2em auto 0;
-}
-
-.star {
-  list-style: none;
-  display: inline-block;
-  margin: 0 0.2em;
-  font-size: 1.5em;
-}
-.moves {
+.score {
   font-weight: bold;
 }
 
