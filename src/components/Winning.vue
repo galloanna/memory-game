@@ -2,7 +2,7 @@
   <div class="win">
     <div>
       <h2 id="congratulations" aria-labelledby="congratulations winningMsg" v-focus tabindex="-1">Congratulations</h2>
-      <p id="winningMsg">{{winningMessage}}</p>
+      <p id="winningMsg">You won!</p>
       <button class="buttonGray" @click="newGame()">Play again</button>
     </div>
   </div>
@@ -13,7 +13,6 @@ export default {
   name: "Winning",
   props: {
     newGame: { type: Function },
-    winningMessage: {type: String}
   },
 };
 </script>

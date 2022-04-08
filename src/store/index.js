@@ -50,13 +50,6 @@ export default new Vuex.Store({
       }
       return deck;
     },
-    winningMessage: (state) => {
-      let msg;
-      while (state.playerScore > 0) {
-        msg = `You won the game!`;
-      }
-      return msg;
-    }
   },
   mutations: {
     ERROR(state, error) {
@@ -99,7 +92,7 @@ export default new Vuex.Store({
         await dispatch('update_Win', ({ win: false }))
         await dispatch('clear_CardsFlipped', ({ cards: [] }))
         await dispatch('update_NumCardsFlipped', ({ num: 0 }))
-        await dispatch('update_playerScore', ({ moves: 0 }))
+        await dispatch('update_playerScore', ({ score: 100 }))
         await dispatch('clear_CardsMatched', ({ cards: [] }))
         await dispatch('update_GameAnnounce', ({ message: "" }))
       } catch (error) {
@@ -121,8 +114,8 @@ export default new Vuex.Store({
     update_NumCardsFlipped({ commit }, { num }) {
       commit('UPDATE_NUMCARDSFLIPPED', num)
     },
-    update_playerScore({ commit }, { moves }) {
-      commit('UPDATE_playerScore', moves)
+    update_playerScore({ commit }, { score }) {
+      commit('UPDATE_playerScore', score)
     },
     clear_CardsMatched({ commit }, { cards }) {
       commit('CLEAR_CARDSMATCHED', cards)
