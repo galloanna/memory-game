@@ -5,7 +5,6 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    routeAnnouncement: '',
     gameAnnounce: '',
     win: false,
     cardsFlipped: [],
@@ -13,14 +12,14 @@ export default new Vuex.Store({
     playerScore: 100,
     cardsMatched: [],
     types: [
-      "car",
-      "bug",
-      "paw",
-      "bomb",
-      "gamepad",
-      "diamond",
-      "heart",
-      "bell"
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8"
     ]
   },
   getters: {
@@ -35,14 +34,14 @@ export default new Vuex.Store({
       for (let index = 0; index < state.types.length; index++) {
         deck.cards.push({
           name: state.types[index],
-          icon: "fa fa-" + state.types[index],
+          value: state.types[index],
           flipped: false,
           match: false,
           close: false
         });
         deck.cards.push({
           name: state.types[index],
-          icon: "fa fa-" + state.types[index],
+          value: state.types[index],
           flipped: false,
           match: false,
           close: false
@@ -57,9 +56,6 @@ export default new Vuex.Store({
     },
     UPDATE_ANNOUNCE(state, payload) {
       state.announce = payload
-    },
-    UPDATE_ROUTE_ANNOUNCEMENT(state, payload) {
-      state.routeAnnouncement = payload
     },
     UPDATE_WIN(state, payload) {
       state.win = payload
@@ -98,9 +94,6 @@ export default new Vuex.Store({
       } catch (error) {
         commit('ERROR', error)
       }
-    },
-    update_routeAnnouncement({ commit }, { message }) {
-      commit('UPDATE_ROUTE_ANNOUNCEMENT', message)
     },
     update_Win({ commit }, { win }) {
       commit('UPDATE_WIN', win)

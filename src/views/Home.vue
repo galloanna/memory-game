@@ -1,38 +1,53 @@
 <template>
   <div class="home" aria-label="Memory Game Board">
-    <p role="status">{{gameAnnounce}}</p>
-    <Winning v-if="win" :newGame="newGame"></Winning>
-    <main class="container" v-else id="main" tabindex="-1" aria-labelledby="gameTitle">
-      <h2 id="gameTitle">Game Board</h2>
+    <p role="status">{{ gameAnnounce }}</p>
+    <main
+      class="container"
+      id="main"
+      tabindex="-1"
+      aria-labelledby="gameTitle"
+    >
+      <h2 id="gameTitle" class="sr-only">Game Board</h2>
       <section aria-label="Memory Game Controller" class="gameController">
-        <button @click="newGame" class="restart buttonGray">
-          <i class="fa fa-repeat"></i>
-          <span class="reset">Reset</span>
+        <button @click="newGame" class="restart reset-button">
+          <span v-if="win" class="reset">Play Again</span>
+          <span v-else class="reset">New Game</span>
         </button>
-        <div>
-          <p class="score">Score: {{playerScore}}</p>
+        <div class="score-wrapper">
+          <p class="score">Score: {{ playerScore }}</p>
         </div>
       </section>
 
-      <section aria-label="Memory Game Board" id="cards">
-        <p id="gameUpdate">{{gameUpdate}}</p>
+      <section aria-label="Memory Game Board" id="cards" class="cards-wrapper">
+        <p id="gameUpdate">{{ gameUpdate }}</p>
         <ul class="cards">
           <li
             v-for="(card, index) in this.deck.cards"
             :key="index"
-            :aria-label="[ card.flipped ? card.name : '']"
+            :aria-label="[card.flipped ? card.name : '']"
             class="cardItem"
           >
             <!-- {{card.name}} -->
             <button
               aria-describedby="gameUpdate"
-              :aria-label="[ card.flipped ? card.name + ' flipped' : 'card ' + (index+1)]"
-              :class="[ card.match ? 'card match' : card.flipped ? 'card show' : card.close ? 'card close' : 'card']"
+              :aria-label="[
+                card.flipped ? card.name + ' flipped' : 'card ' + (index + 1),
+              ]"
+              :class="[
+                card.match
+                  ? 'card match'
+                  : card.flipped
+                  ? 'card show'
+                  : card.close
+                  ? 'card close'
+                  : 'card',
+              ]"
               @click="flipCard(card)"
               :disabled="card.match"
             >
-              <span v-if="!card.flipped">?</span>
-              <div v-else :class="deck.cards[index].icon"></div>
+              <span v-if="card.flipped" class="card-value">
+                {{ deck.cards[index].value }}
+              </span>
             </button>
           </li>
         </ul>
@@ -42,15 +57,10 @@
 </template>
 
 <script>
-import Winning from "@/components/Winning.vue";
-// @ is an alias to /src
 import { mapState, mapGetters, mapActions } from "vuex";
 
 export default {
   name: "Home",
-  components: {
-    Winning,
-  },
   computed: {
     ...mapState([
       "gameAnnounce",
@@ -59,9 +69,9 @@ export default {
       "numCardsFlipped",
       "playerScore",
       "cardsMatched",
-      "types"
+      "types",
     ]),
-    ...mapGetters(["gameUpdate", "deck"])
+    ...mapGetters(["gameUpdate", "deck"]),
   },
   created() {
     this.shuffle(this.deck.cards);
@@ -77,7 +87,7 @@ export default {
       "update_playerScore",
       "clear_CardsMatched",
       "update_CardsMatched",
-      "update_GameAnnounce"
+      "update_GameAnnounce",
     ]),
     shuffle(cards) {
       this.deck.cards = [];
@@ -113,7 +123,7 @@ export default {
       this.update_GameAnnounce({ message: "" });
       while (card.flipped) {
         this.update_GameAnnounce({
-          message: "Card already flipped."
+          message: "Card already flipped.",
         });
         return;
       }
@@ -121,7 +131,7 @@ export default {
       if (this.numCardsFlipped < 2) {
         if (this.numCardsFlipped < 1) {
           this.update_GameAnnounce({
-            message: card.name + " flipped."
+            message: card.name + " flipped.",
           });
         }
         card.flipped = true;
@@ -138,9 +148,7 @@ export default {
               this.deck.cards[i].match = true;
             }
             this.update_GameAnnounce({
-              message:
-                card.name +
-                " flipped. Match found!"
+              message: card.name + " flipped. Match found!",
             });
           }
           this.update_CardsMatched({ cards: this.cardsFlipped });
@@ -159,7 +167,7 @@ export default {
           this.update_playerScore({ score: this.playerScore - 1 });
           // Wait before closing mismatched card
           this.update_GameAnnounce({
-            message: card.name + " flipped. No match."
+            message: card.name + " flipped. No match.",
           });
           setTimeout(() => {
             for (let i = 0; i < this.deck.cards.length; i++) {
@@ -174,106 +182,99 @@ export default {
           }, 400);
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style lang="scss">
+html,
+body {
+  margin: 0px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.cards-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
 // Cards
 .cards {
-  margin: 2em auto;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap: 0.5em;
-  padding: 0;
+margin: 0px auto;
+  height: 100%;
+  width: calc(100% + 10px);
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: stretch;
+  // justify-content: space-between;
+  padding: 5px;
+  gap: 10px;
 
   .cardItem {
     list-style: none;
+    width: calc(25% - 10px);
   }
 
   .card {
-    height: 90px;
-    width: 90px;
+    width: 100%;
+    height: 100%;
     font-size: 4em;
-    background: #061018 url(/img/fabric.5959b418.png);
-    background-blend-mode: soft-light;
-    border: 1px solid #acacac;
-    color: #ffffff;
-    border-radius: 8px;
+    border: 4px solid #ff8b37;
+    color: white;
+    background: white;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 5px 2px 20px 0 rgba(46, 61, 73, 0.5);
+  }
+
+  .card-value {
+    position: absolute;
   }
 
   .show {
-    font-size: 33px;
-    background: #0b5891 url(/img/fabric.5959b418.png);
+    background: #ff4d2d;
+    border: 4px solid #ff4d2d;
     cursor: default;
   }
 
   .match {
     cursor: default;
-    background: #0e4b5a url(/img/fabric.5959b418.png);
-    font-size: 33px;
-    animation-name: match-animation;
-    -webkit-animation-name: match-animation;
-    animation-duration: 400ms;
-    -webkit-animation-duration: 400ms;
-    transform-origin: 70% 70%;
-    animation-iteration-count: 400ms;
-    animation-timing-function: linear;
+    background: #20b149;
+    border: 4px solid #20b149;
   }
 
   .close {
     cursor: default;
-    animation-name: close;
-    -webkit-animation-name: close;
-    animation-duration: 400ms;
-    -webkit-animation-duration: 400ms;
-    -webkit-animation-fill-mode: both;
-    animation-fill-mode: both;
+    transition: background 1s linear;
     &:hover,
     &:focus {
-      background-blend-mode: hard-light;
-      color: #112c3e;
-      border: 2px solid #112c3e;
+      outline: 2px solid black;
     }
   }
 }
 
-@keyframes match-animation {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  60% {
-    transform: scale(0.9);
-  }
-}
-
-@keyframes close {
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-  50% {
-    transform: rotate(5deg);
-  }
-  80% {
-    transform: rotate(-5deg);
-  }
-}
-
 // Game Controller
+.gameController {
+  width: 100%;
+  display: flex;
+  padding: 5px;
+}
 .score {
+  text-align: right;
   font-weight: bold;
 }
 
-.gameController .restart {
-  float: right;
+.score-wrapper {
+  width: 50%;
+  margin-left: 10px;
+}
+
+.restart {
+  width: 50%;
   cursor: pointer;
 }
 
@@ -297,52 +298,26 @@ export default {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  height: 100%;
 }
 
 // Buttons
 
-.buttonGray {
-  background: #2e3d49;
+.reset-button {
+  width: 50%;
+  border: none;
+  background: #ff8b37;
   font-size: 1em;
   color: #ffffff;
-  border-radius: 8px;
   cursor: pointer;
   justify-content: center;
   align-items: center;
   padding: 0.5em;
-  box-shadow: 5px 2px 20px 0 rgba(46, 61, 73, 0.5);
+  text-transform: uppercase;
+  font-weight: 700;
   &:hover,
   &:focus {
-    background: #0b5891;
-  }
-}
-
-.reset {
-  padding-left: 1em;
-}
-
-// MEDIA QUERIES
-@media (min-width: 350px) {
-  .cards {
-    grid-template-columns: repeat(3, 1fr);
-    .card {
-      height: 100px;
-      width: 100px;
-    }
-  }
-}
-@media (min-width: 450px) {
-  .cards {
-    grid-gap: 1em;
-    .card {
-      height: 125px;
-      width: 125px;
-    }
-  }
-}
-@media (min-width: 600px) {
-  .cards {
-    grid-template-columns: repeat(4, 1fr);
+    outline: 2px solid black;
   }
 }
 </style>
