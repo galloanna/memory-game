@@ -1,18 +1,9 @@
 <template>
   <div id="app">
     <header>
-      <ul class="skip-links">
-        <li>
-          <a href="#main" ref="skipLink">Skip to main content</a>
-        </li>
-      </ul>
       <h1 class="title">Matching Game</h1>
     </header>
-    <p role="status">{{routeAnnouncement}}</p>
-    <div id="nav" ref="nav">
-      <router-link to="/" aria-current="page" :active-class="$route.path=='/' ? 'router-link-active' : ''">Home</router-link> |
-      <router-link to="/Instructions">Instructions</router-link>
-    </div>
+    <p role="status">{{ routeAnnouncement }}</p>
     <router-view />
   </div>
 </template>
@@ -23,37 +14,35 @@ import { mapState, mapActions } from "vuex";
 export default {
   name: "app",
   computed: {
-    ...mapState(["routeAnnouncement"])
+    ...mapState(["routeAnnouncement"]),
   },
   watch: {
-    $route: function() {
+    $route: function () {
       this.$refs["skipLink"].focus();
 
       this.announceRoute({ message: this.$route.name + " page loaded" });
-      
-      this.$nextTick(function() {
 
-        let navLinks = this.$refs.nav
-        
-        navLinks.querySelectorAll("[aria-current]")
-          .forEach(current => {
-            current.removeAttribute("aria-current");
-          });
+      this.$nextTick(function () {
+        let navLinks = this.$refs.nav;
 
-        navLinks.querySelectorAll(".router-link-exact-active")
-          .forEach(current => {
+        navLinks.querySelectorAll("[aria-current]").forEach((current) => {
+          current.removeAttribute("aria-current");
+        });
+
+        navLinks
+          .querySelectorAll(".router-link-exact-active")
+          .forEach((current) => {
             current.setAttribute("aria-current", "page");
           });
       });
-
-    }
+    },
   },
   methods: {
     ...mapActions(["update_routeAnnouncement"]),
     announceRoute(message) {
       this.update_routeAnnouncement(message);
-    }
-  }
+    },
+  },
 };
 </script>
 

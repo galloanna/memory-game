@@ -18,23 +18,6 @@ const routes = [
       ]
     },
     component: Home
-  },
-  {
-    path: '/Instructions',
-    name: 'Instructions',
-    meta: {
-      title: 'Memory Game - Instructions Page',
-      metaTags: [
-        {
-          name: 'description',
-          content: 'This is the instructions page for the accessible Memory Game using Vue.js.'
-        }
-      ]
-    },
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Instructions.vue')
   }
 ]
 

@@ -1,7 +1,7 @@
 <template>
   <div class="home" aria-label="Memory Game Board">
     <p role="status">{{gameAnnounce}}</p>
-    <Winning v-if="win" :newGame="newGame" :winningMessage="winningMessage"></Winning>
+    <Winning v-if="win" :newGame="newGame"></Winning>
     <main class="container" v-else id="main" tabindex="-1" aria-labelledby="gameTitle">
       <h2 id="gameTitle">Game Board</h2>
       <section aria-label="Memory Game Controller" class="gameController">
@@ -10,12 +10,7 @@
           <span class="reset">Reset</span>
         </button>
         <div>
-          <ul class="stars" :aria-label="stars + ' stars left'">
-            <li v-for="(star, index) in stars" :key="index" class="star">
-              <i :class="`${index} fa fa-star`"></i>
-            </li>
-          </ul>
-          <p class="moves">Moves: {{numMoves}}</p>
+          <p class="score">Score: {{playerScore}}</p>
         </div>
       </section>
 
@@ -47,27 +42,26 @@
 </template>
 
 <script>
-// @ is an alias to /src
 import Winning from "@/components/Winning.vue";
+// @ is an alias to /src
 import { mapState, mapGetters, mapActions } from "vuex";
 
 export default {
   name: "Home",
   components: {
-    Winning
+    Winning,
   },
   computed: {
     ...mapState([
       "gameAnnounce",
       "win",
-      "stars",
       "cardsFlipped",
       "numCardsFlipped",
-      "numMoves",
+      "playerScore",
       "cardsMatched",
       "types"
     ]),
-    ...mapGetters(["gameUpdate", "deck", "winningMessage"])
+    ...mapGetters(["gameUpdate", "deck"])
   },
   created() {
     this.shuffle(this.deck.cards);
@@ -77,11 +71,10 @@ export default {
       "clearGame",
       "updateDeck",
       "update_Win",
-      "update_Stars",
       "clear_CardsFlipped",
       "update_CardsFlipped",
       "update_NumCardsFlipped",
-      "update_NumMoves",
+      "update_playerScore",
       "clear_CardsMatched",
       "update_CardsMatched",
       "update_GameAnnounce"
@@ -118,22 +111,11 @@ export default {
 
     flipCard(card) {
       this.update_GameAnnounce({ message: "" });
-      if (card.flipped) {
+      while (card.flipped) {
         this.update_GameAnnounce({
           message: "Card already flipped."
         });
         return;
-      } else {
-        this.update_NumMoves({ moves: this.numMoves + 1 });
-        if (this.numMoves < 30) {
-          this.update_Stars({ num: 3 });
-        } else if (this.numMoves < 40) {
-          this.update_Stars({ num: 2 });
-        } else if (this.numMoves < 50) {
-          this.update_Stars({ num: 1 });
-        } else if (this.numMoves > 50) {
-          this.update_Stars({ num: 0 });
-        }
       }
       // only allow flips if there are < or = 2 flipped cards
       if (this.numCardsFlipped < 2) {
@@ -150,8 +132,7 @@ export default {
           this.numCardsFlipped === 2 &&
           this.cardsFlipped[0].name == this.cardsFlipped[1].name
         ) {
-          let matchesRemaining =
-            this.deck.cards.length / 2 - this.cardsMatched.length - 1;
+          this.update_playerScore({ score: this.playerScore + 10 });
           for (let i = 0; i < this.deck.cards.length; i++) {
             if (this.deck.cards[i].name == this.cardsFlipped[0].name) {
               this.deck.cards[i].match = true;
@@ -159,9 +140,7 @@ export default {
             this.update_GameAnnounce({
               message:
                 card.name +
-                " flipped. Match found! " +
-                matchesRemaining +
-                " matches left!"
+                " flipped. Match found!"
             });
           }
           this.update_CardsMatched({ cards: this.cardsFlipped });
@@ -170,9 +149,6 @@ export default {
           //if number of cards matched = number or cards, then win the game
           if (this.cardsMatched.length === this.deck.cards.length / 2) {
             this.update_Win({ win: true });
-            this.update_GameAnnounce({
-              message: this.winningMessage
-            });
           }
         }
         // NO MATCH
@@ -180,6 +156,7 @@ export default {
           this.numCardsFlipped === 2 &&
           this.cardsFlipped[0].name !== this.cardsFlipped[1].name
         ) {
+          this.update_playerScore({ score: this.playerScore - 1 });
           // Wait before closing mismatched card
           this.update_GameAnnounce({
             message: card.name + " flipped. No match."
@@ -194,7 +171,7 @@ export default {
             this.clear_CardsFlipped({ cards: [] });
             this.update_NumCardsFlipped({ num: 0 });
             return;
-          }, 900);
+          }, 400);
         }
       }
     }
@@ -243,10 +220,10 @@ export default {
     font-size: 33px;
     animation-name: match-animation;
     -webkit-animation-name: match-animation;
-    animation-duration: 1000ms;
-    -webkit-animation-duration: 1000ms;
+    animation-duration: 400ms;
+    -webkit-animation-duration: 400ms;
     transform-origin: 70% 70%;
-    animation-iteration-count: 1000ms;
+    animation-iteration-count: 400ms;
     animation-timing-function: linear;
   }
 
@@ -254,8 +231,8 @@ export default {
     cursor: default;
     animation-name: close;
     -webkit-animation-name: close;
-    animation-duration: 1000ms;
-    -webkit-animation-duration: 1000ms;
+    animation-duration: 400ms;
+    -webkit-animation-duration: 400ms;
     -webkit-animation-fill-mode: both;
     animation-fill-mode: both;
     &:hover,
@@ -291,19 +268,7 @@ export default {
 }
 
 // Game Controller
-.gameController .stars {
-  padding: 0px;
-  display: inline-block;
-  margin: 2em auto 0;
-}
-
-.star {
-  list-style: none;
-  display: inline-block;
-  margin: 0 0.2em;
-  font-size: 1.5em;
-}
-.moves {
+.score {
   font-weight: bold;
 }
 
