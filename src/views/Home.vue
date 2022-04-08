@@ -221,7 +221,7 @@ margin: 0px auto;
   .card {
     width: 100%;
     height: 100%;
-    font-size: 4em;
+    font-size: 5vw;
     border: 4px solid #ff8b37;
     color: white;
     background: white;
